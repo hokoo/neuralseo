@@ -1,0 +1,2 @@
+# neuralseo
+WordPress plugin
