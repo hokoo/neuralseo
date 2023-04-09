@@ -9,3 +9,7 @@
 * Text Domain: neuralseo
 * Domain Path: /languages
 */
+
+
+require_once __DIR__ . '/lib/neuralApi/autoload.php';
+$client = new \NeuralApi\DevClient();
