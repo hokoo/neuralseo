@@ -9,6 +9,22 @@
       "email": "root@itron.pro"
     }
   ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/hokoo/wpPostAble.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/hokoo/wpConnections.git"
+    }
+  ],
   "require": {
+    "hokoo/wppostable": ">=0.5",
+    "hokoo/wpconnections": "dev-dev"
   }
 }
