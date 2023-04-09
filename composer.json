@@ -1,0 +1,14 @@
+{
+  "name": "hokoo/neuralseo",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Igor Tron",
+      "email": "root@itron.pro"
+    }
+  ],
+  "require": {
+  }
+}
