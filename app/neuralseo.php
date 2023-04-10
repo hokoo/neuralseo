@@ -10,6 +10,6 @@
 * Domain Path: /languages
 */
 
-
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/neuralApi/autoload.php';
 $client = new \NeuralApi\DevClient();
