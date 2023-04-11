@@ -25,6 +25,7 @@
   ],
   "require": {
     "hokoo/wppostable": ">=0.5",
-    "hokoo/wpconnections": "dev-dev"
+    "hokoo/wpconnections": "dev-dev",
+    "woocommerce/action-scheduler": "^3.5"
   }
 }
