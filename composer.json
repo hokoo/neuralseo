@@ -27,5 +27,10 @@
     "hokoo/wppostable": ">=0.5",
     "hokoo/wpconnections": "dev-dev",
     "woocommerce/action-scheduler": "^3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "NeuralSEO\\": "app/src"
+    }
   }
 }

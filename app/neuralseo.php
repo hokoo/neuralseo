@@ -10,6 +10,25 @@
 * Domain Path: /languages
 */
 
+namespace NeuralSEO;
+
+use NeuralApi\DevClient;
+use NeuralSEO\Controllers\CPT;
+use NeuralSEO\Controllers\General;
+use NeuralSEO\Controllers\Webhook;
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/neuralApi/autoload.php';
-$client = new \NeuralApi\DevClient();
+require_once __DIR__ . '/includes/functions.php';
+
+const SLUG = 'neural_seo';
+const REQUEST_HOOK = 'nseo/request';
+const ACTIVE_TASK_POST_META = 'nseo_task_id';
+const CPT_TITLE = 'nseo_title';
+const CPT_DESCRIPTION = 'nseo_description';
+const WPC_RELATION_T2P = 'title2product';
+const WPC_RELATION_D2P = 'description2product';
+
+$controller = new General();
+( new CPT() )::init();
+( new Webhook( $controller ) )->init();
