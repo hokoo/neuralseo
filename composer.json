@@ -30,7 +30,7 @@
   },
   "autoload": {
     "psr-4": {
-      "NeuralSEO\\": "app/src"
+      "NeuralSEO\\": "src"
     }
   }
 }
