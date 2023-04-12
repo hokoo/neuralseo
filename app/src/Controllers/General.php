@@ -35,6 +35,20 @@ class General {
 	 */
 	public function init() {
 		$this->registerRelations();
+		$this->registerRequestReceiving();
+	}
+
+	/**
+	 * Listens for requests from FE.
+	 *
+	 * @return void
+	 */
+	public function registerRequestReceiving() {
+
+		/**
+		 * The chain of all starts here.
+		 */
+		add_action( 'nseo/request/created', [ $this, 'processRequestCreating' ], 10, 1 );
 	}
 
 	/**
@@ -102,5 +116,9 @@ class General {
 			$descrConnectionQuery->set( 'order', 10 );
 			$this->getConnectionsClient()->getRelation( WPC_RELATION_D2P )->createConnection( $descrConnectionQuery );
 		}
+	}
+
+	public function processRequestCreating( \WP_Post $post ) {
+		Scheduler::enqueueDataRequest( $post->ID );
 	}
 }

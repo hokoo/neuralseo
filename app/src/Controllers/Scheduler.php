@@ -15,7 +15,7 @@ class Scheduler {
 	 *
 	 * @return void
 	 */
-	public static function enqueue_data_request( int $post_id ) {
+	public static function enqueueDataRequest( int $post_id ) {
 
 		// @todo Item data
 		$data = [
