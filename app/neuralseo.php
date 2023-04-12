@@ -30,5 +30,6 @@ const WPC_RELATION_T2P = 'title2product';
 const WPC_RELATION_D2P = 'description2product';
 
 $controller = new General();
+$controller->init();
 ( new CPT() )::init();
 ( new Webhook( $controller ) )->init();
