@@ -16,7 +16,7 @@ use iTRON\wpPostAble\Exceptions\wppaSavePostException;
 class Webhook {
 	private General $general;
 	private string $namespace = 'neuralseo/v1';
-	private string $base = 'respond';
+	private string $base = '/respond/';
 
 	public function __construct( General $general ) {
 		$this->general = $general;
