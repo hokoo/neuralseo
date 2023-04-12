@@ -10,12 +10,14 @@ use iTRON\wpPostAble\wpPostAbleTrait;
 abstract class Entity implements wpPostAble {
 	use wpPostAbleTrait;
 
+	protected string $_post_type;
+
 	/**
 	 * @throws wppaLoadPostException
 	 * @throws wppaCreatePostException
 	 */
 	public function __construct( int $description_id = 0 ) {
-		$this->wpPostAble( $this->post_type, $description_id );
+		$this->wpPostAble( $this->_post_type, $description_id );
 	}
 
 	public function setLanguage( string $language ) {

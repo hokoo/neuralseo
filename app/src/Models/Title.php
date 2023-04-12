@@ -1,22 +1,19 @@
 <?php
 
-namespace NeuralSEO;
+namespace NeuralSEO\Models;
 
 use iTRON\wpPostAble\Exceptions\wppaCreatePostException;
 use iTRON\wpPostAble\Exceptions\wppaLoadPostException;
-use iTRON\wpPostAble\wpPostAble;
-use iTRON\wpPostAble\wpPostAbleTrait;
-use NeuralSEO\Models\Entity;
+use const NeuralSEO\CPT_TITLE;
 
-class Title extends Entity implements wpPostAble {
-	use wpPostAbleTrait;
+class Title extends Entity{
 
 	/**
 	 * @throws wppaLoadPostException
 	 * @throws wppaCreatePostException
 	 */
 	public function __construct( int $description_id = 0 ) {
-		$this->post_type = CPT_TITLE;
+		$this->_post_type = CPT_TITLE;
 		parent::__construct( $description_id );
 	}
 }
