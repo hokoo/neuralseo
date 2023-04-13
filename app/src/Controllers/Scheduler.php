@@ -2,7 +2,8 @@
 
 namespace NeuralSEO\Controllers;
 
-use const NeuralSEO\ACTIVE_TASK_POST_META;
+use NeuralSEO\Models\Status;
+use const NeuralSEO\POST_STATUS_META;
 use const NeuralSEO\REQUEST_HOOK;
 use const NeuralSEO\SLUG;
 
@@ -33,6 +34,10 @@ class Scheduler {
 
 		$task_id = as_enqueue_async_action( REQUEST_HOOK, $data, SLUG );
 
-		update_post_meta( $post_id, ACTIVE_TASK_POST_META, $task_id );
+		$status = new Status();
+		$status->actionID = $task_id;
+		$status->setPending();
+
+		update_post_meta( $post_id, POST_STATUS_META, $status->toArray() );
 	}
 }

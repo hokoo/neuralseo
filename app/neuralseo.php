@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/functions.php';
 
 const SLUG = 'neural_seo';
 const REQUEST_HOOK = 'nseo/request';
-const ACTIVE_TASK_POST_META = 'nseo_task_id';
+const POST_STATUS_META = 'nseo_post_status';
 const CPT_TITLE = 'nseo_title';
 const CPT_DESCRIPTION = 'nseo_description';
 const WPC_RELATION_T2P = 'title2product';

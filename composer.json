@@ -30,7 +30,15 @@
   },
   "autoload": {
     "psr-4": {
-      "NeuralSEO\\": "src"
+      "NeuralSEO\\": "app/src/",
+      "NeuralSEO\\Tests\\": "tests/"
+
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "scripts": {
+    "phpunit": "phpunit"
   }
 }

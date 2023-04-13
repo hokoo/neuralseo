@@ -1,6 +1,7 @@
 /vendor
 
-# ignore log files and databases
+# ignore log files, caches and databases
 *.log
 *.sql
 *.sqlite
+*.cache
