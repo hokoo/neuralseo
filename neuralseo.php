@@ -12,8 +12,8 @@
 
 namespace NeuralSEO;
 
-use NeuralApi\DevClient;
 use NeuralSEO\Controllers\CPT;
+use NeuralSEO\Controllers\DataManager;
 use NeuralSEO\Controllers\General;
 use NeuralSEO\Controllers\Webhook;
 
@@ -29,7 +29,9 @@ const CPT_DESCRIPTION = 'nseo_description';
 const WPC_RELATION_T2P = 'title2product';
 const WPC_RELATION_D2P = 'description2product';
 
-$controller = new General();
+$controller = new General(
+	new DataManager(),
+	new CPT(),
+	new Webhook()
+);
 $controller->init();
-( new CPT() )::init();
-( new Webhook( $controller ) )->init();

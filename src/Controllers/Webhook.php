@@ -18,16 +18,14 @@ class Webhook {
 	private string $namespace = 'neuralseo/v1';
 	private string $base = '/respond/';
 
-	public function __construct( General $general ) {
+	public function init( General $general ) {
 		$this->general = $general;
-	}
-
-	public function init() {
 		add_action( 'rest_api_init', [ $this, 'registerRestRoutes' ], 10 );
 	}
 
 	/**
 	 * Receives data from Neural API.
+	 * The Chain B starts here.
 	 *
 	 * @throws RelationNotFound
 	 * @throws ConnectionWrongData
@@ -39,7 +37,7 @@ class Webhook {
 		$language = $request->get_param( 'language' );
 		$data = $request->get_param( 'data' );
 
-		$this->general->processResults( $post_id, $language, $data );
+		$this->general->dataManager->processResults( $post_id, $language, $data );
 	}
 
 	public function registerRestRoutes() {

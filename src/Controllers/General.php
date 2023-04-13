@@ -2,40 +2,39 @@
 
 namespace NeuralSEO\Controllers;
 
-use iTRON\wpConnections\Client;
-use iTRON\wpConnections\Exceptions\ConnectionWrongData;
 use iTRON\wpConnections\Exceptions\MissingParameters;
-use iTRON\wpConnections\Exceptions\RelationNotFound;
 use iTRON\wpConnections\Exceptions\RelationWrongData;
-use iTRON\wpConnections\Query\Connection;
 use iTRON\wpConnections\Query\Relation;
-use iTRON\wpPostAble\Exceptions\wppaSavePostException;
-use NeuralSEO\Models\Description;
-use NeuralSEO\Models\Title;
+use NeuralSEO\Factory;
+use NeuralSEO\Models\RequestData;
 use const NeuralSEO\CPT_DESCRIPTION;
 use const NeuralSEO\CPT_TITLE;
+use const NeuralSEO\REQUEST_HOOK;
 use const NeuralSEO\SLUG;
 use const NeuralSEO\WPC_RELATION_D2P;
 use const NeuralSEO\WPC_RELATION_T2P;
 
 class General {
-	private Client $connectionsClient;
+	public DataManager $dataManager;
+	public CPT $CPT;
+	public Webhook $webhook;
 
-	public function getConnectionsClient(): Client {
-		if ( empty( $this->connectionsClient ) ) {
-			$this->connectionsClient = new Client( SLUG );
-		}
-
-		return $this->connectionsClient;
+	public function __construct(
+		DataManager $dataManager,
+		CPT $CPT,
+		Webhook $webhook
+	) {
+		$this->dataManager = $dataManager;
+		$this->CPT = $CPT;
+		$this->webhook = $webhook;
 	}
 
-	/**
-	 * @throws MissingParameters
-	 * @throws RelationWrongData
-	 */
 	public function init() {
-		$this->registerRelations();
-		$this->registerRequestReceiving();
+		$this->CPT::init();
+		$this->webhook->init( $this );
+
+		add_action( 'init', [ $this, 'registerRelations' ], 10 );
+		$this->registerRequestListener();
 	}
 
 	/**
@@ -43,7 +42,7 @@ class General {
 	 *
 	 * @return void
 	 */
-	public function registerRequestReceiving() {
+	public function registerRequestListener() {
 
 		/**
 		 * The Chain A starts here.
@@ -52,6 +51,8 @@ class General {
 	}
 
 	/**
+	 * Prepares the connection client.
+	 *
 	 * @throws RelationWrongData
 	 * @throws MissingParameters
 	 */
@@ -72,53 +73,13 @@ class General {
 			->set( 'cardinality', '1-m' )
 			->set( 'duplicatable', false );
 
-		$this->getConnectionsClient()->registerRelation( $title2product );
-		$this->getConnectionsClient()->registerRelation( $description2product );
+		Factory::getConnectionsClient()->registerRelation( $title2product );
+		Factory::getConnectionsClient()->registerRelation( $description2product );
 	}
 
-	/**
-	 * Processes data from Neural API.
-	 *
-	 * Received data format.
-	 * @type int        $post_id    Post ID.
-	 * @type string     $language   Language of generated data.
-	 * @type array      $data {
-	 *      @type   string  $title
-	 *      @type   string  $description
-	 * }
-	 *
-	 * @return void
-	 *
-	 * @throws RelationNotFound
-	 * @throws ConnectionWrongData
-	 * @throws MissingParameters
-	 * @throws wppaSavePostException
-	 */
-	public function processResults( int $post_id, string $language, array $data ){
-		foreach ( $data as $item ) {
-			$title = new Title();
-			$title->getPost()->post_content = $item['title'];
-			$title->publish();
-
-			$titleConnectionQuery = new Connection();
-			$titleConnectionQuery->set( 'from', $title->getPost()->ID );
-			$titleConnectionQuery->set( 'to', $post_id );
-			$titleConnectionQuery->set( 'order', 10 );
-			$this->getConnectionsClient()->getRelation( WPC_RELATION_T2P )->createConnection( $titleConnectionQuery );
-
-			$description = new Description();
-			$description->getPost()->post_content = $item['description'];
-			$description->publish();
-
-			$descrConnectionQuery = new Connection();
-			$descrConnectionQuery->set( 'from', $description->getPost()->ID );
-			$descrConnectionQuery->set( 'to', $post_id );
-			$descrConnectionQuery->set( 'order', 10 );
-			$this->getConnectionsClient()->getRelation( WPC_RELATION_D2P )->createConnection( $descrConnectionQuery );
-		}
-	}
-
-	public function processRequestTriggering( \WP_Post $post ) {
-		Scheduler::enqueueDataRequest( $post->ID );
+	public function processRequestTriggering( $postID ) {
+		$data = new RequestData( $postID );
+		$actionID = as_enqueue_async_action( REQUEST_HOOK, $data->toArray(), SLUG );
+		StatusManager::actionScheduled( $actionID, $postID );
 	}
 }

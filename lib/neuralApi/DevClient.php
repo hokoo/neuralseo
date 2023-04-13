@@ -3,6 +3,7 @@
 namespace NeuralApi;
 
 use NeuralApi\Client\INeuralClient;
+use NeuralSEO\Exceptions\RequestFailed;
 
 class DevClient implements INeuralClient {
 
@@ -19,7 +20,14 @@ class DevClient implements INeuralClient {
 		];
 	}
 
-	function requestData( array $data ) {
-		return 200;
+	/**
+	 * @throws RequestFailed
+	 */
+	function requestData( array $data ): bool {
+		if ( 0 ) {
+			throw new RequestFailed();
+		}
+
+		return true;
 	}
 }
