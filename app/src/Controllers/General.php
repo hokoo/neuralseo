@@ -46,9 +46,9 @@ class General {
 	public function registerRequestReceiving() {
 
 		/**
-		 * The chain of all starts here.
+		 * The Chain A starts here.
 		 */
-		add_action( 'nseo/request/created', [ $this, 'processRequestCreating' ], 10, 1 );
+		add_action( 'nseo/request/triggered', [ $this, 'processRequestTriggering' ], 10, 1 );
 	}
 
 	/**
@@ -118,7 +118,7 @@ class General {
 		}
 	}
 
-	public function processRequestCreating( \WP_Post $post ) {
+	public function processRequestTriggering( \WP_Post $post ) {
 		Scheduler::enqueueDataRequest( $post->ID );
 	}
 }
