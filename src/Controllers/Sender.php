@@ -21,7 +21,6 @@ class Sender {
 
 	/**
 	 * @throws RequestFailed
-	 * @throws ExcessRequest
 	 */
 	public static function processRequest( $data ) {
 		$requestData = RequestData::fromArray( $data );
