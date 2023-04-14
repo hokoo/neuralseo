@@ -12,11 +12,7 @@
 
 namespace NeuralSEO;
 
-use NeuralSEO\Controllers\CPT;
-use NeuralSEO\Controllers\DataManager;
 use NeuralSEO\Controllers\General;
-use NeuralSEO\Controllers\Sender;
-use NeuralSEO\Controllers\Webhook;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/neuralApi/autoload.php';
@@ -30,10 +26,4 @@ const CPT_DESCRIPTION = 'nseo_description';
 const WPC_RELATION_T2P = 'title2product';
 const WPC_RELATION_D2P = 'description2product';
 
-$controller = new General(
-	new DataManager(),
-	new CPT(),
-	new Webhook(),
-	new Sender()
-);
-$controller->init();
+( new General() )->init();

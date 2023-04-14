@@ -32,31 +32,29 @@ class DataManager {
 	 * @throws MissingParameters
 	 * @throws wppaSavePostException
 	 */
-	public function processResults( int $postID, string $language, array $data ){
+	public static function processResults( int $postID, string $language, array $data ){
 		foreach ( $data as $item ) {
 			$title = new Title();
 			$title->getPost()->post_content = $item['title'];
 			$title->setLanguage( $language );
 			$title->publish();
 
-			$titleConnectionQuery = new Connection();
-			$titleConnectionQuery->set( 'from', $title->getPost()->ID );
-			$titleConnectionQuery->set( 'to', $postID );
-			$titleConnectionQuery->set( 'order', 10 );
-			Factory::getConnectionsClient()->getRelation( WPC_RELATION_T2P )->createConnection( $titleConnectionQuery );
+			$tConnectionQuery = new Connection();
+			$tConnectionQuery->set( 'from', $title->getPost()->ID );
+			$tConnectionQuery->set( 'to', $postID );
+			$tConnectionQuery->set( 'order', 10 );
+			Factory::getConnectionsClient()->getRelation( WPC_RELATION_T2P )->createConnection( $tConnectionQuery );
 
 			$description = new Description();
 			$description->getPost()->post_content = $item['description'];
 			$description->setLanguage( $language );
 			$description->publish();
 
-			$descrConnectionQuery = new Connection();
-			$descrConnectionQuery->set( 'from', $description->getPost()->ID );
-			$descrConnectionQuery->set( 'to', $postID );
-			$descrConnectionQuery->set( 'order', 10 );
-			Factory::getConnectionsClient()->getRelation( WPC_RELATION_D2P )->createConnection( $descrConnectionQuery );
-
-			StatusManager::dataReceived( $postID );
+			$dConnectionQuery = new Connection();
+			$dConnectionQuery->set( 'from', $description->getPost()->ID );
+			$dConnectionQuery->set( 'to', $postID );
+			$dConnectionQuery->set( 'order', 10 );
+			Factory::getConnectionsClient()->getRelation( WPC_RELATION_D2P )->createConnection( $dConnectionQuery );
 		}
 	}
 }

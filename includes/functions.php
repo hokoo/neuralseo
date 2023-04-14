@@ -3,18 +3,6 @@
 namespace NeuralSEO;
 
 use ActionScheduler;
-use NeuralApi\DevClient;
-
-function get_client() {
-	static $client;
-
-	if ( empty( $client ) ) {
-		$client = new DevClient();
-		$client->setAuth( Settings::getAccountLogin(), Settings::getAccountKey() );
-	}
-
-	return $client;
-}
 
 function get_action_status_by_id( $action_id ) {
 	// Make sure Action Scheduler is loaded

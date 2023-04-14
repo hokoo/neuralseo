@@ -2,6 +2,8 @@
 
 namespace NeuralApi\Client;
 
+use NeuralSEO\Exceptions\RequestFailed;
+
 interface INeuralClient {
 	function setAuth( string $login, string $apiKey );
 
@@ -17,6 +19,8 @@ interface INeuralClient {
 	 *  @type   int     $num        Number of variants
 	 * }
 	 * @return mixed
+	 *
+	 * @throws RequestFailed
 	 */
 	function requestData( array $data );
 }
