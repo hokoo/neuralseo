@@ -32,7 +32,12 @@ class RequestData {
 
 	public static function fromArray( array $data ): self {
 		$instance = new self();
-		$instance->data = $data;
+		$instance->postID       = $data['postID'];
+		$instance->title        = $data['title'];
+		$instance->description  = $data['description'];
+		$instance->language     = $data['language'];
+		$instance->attributes   = $data['attributes'];
+
 		return $instance;
 	}
 }
