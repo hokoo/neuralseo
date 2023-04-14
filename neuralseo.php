@@ -15,6 +15,7 @@ namespace NeuralSEO;
 use NeuralSEO\Controllers\CPT;
 use NeuralSEO\Controllers\DataManager;
 use NeuralSEO\Controllers\General;
+use NeuralSEO\Controllers\Sender;
 use NeuralSEO\Controllers\Webhook;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -32,6 +33,7 @@ const WPC_RELATION_D2P = 'description2product';
 $controller = new General(
 	new DataManager(),
 	new CPT(),
-	new Webhook()
+	new Webhook(),
+	new Sender()
 );
 $controller->init();

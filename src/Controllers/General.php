@@ -5,6 +5,7 @@ namespace NeuralSEO\Controllers;
 use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationWrongData;
 use iTRON\wpConnections\Query\Relation;
+use NeuralSEO\Exceptions\ExcessRequest;
 use NeuralSEO\Factory;
 use NeuralSEO\Models\RequestData;
 use const NeuralSEO\CPT_DESCRIPTION;
@@ -18,35 +19,36 @@ class General {
 	public DataManager $dataManager;
 	public CPT $CPT;
 	public Webhook $webhook;
+	private Sender $sender;
 
 	public function __construct(
 		DataManager $dataManager,
 		CPT $CPT,
-		Webhook $webhook
+		Webhook $webhook,
+		Sender $sender
 	) {
 		$this->dataManager = $dataManager;
 		$this->CPT = $CPT;
 		$this->webhook = $webhook;
+		$this->sender = $sender;
 	}
 
 	public function init() {
 		$this->CPT::init();
 		$this->webhook->init( $this );
+		$this->sender::init();
 
 		add_action( 'init', [ $this, 'registerRelations' ], 10 );
 		$this->registerRequestListener();
 	}
 
 	/**
-	 * Listens for requests from FE.
+	 * The Chain A starts here.
+	 * Listens for the requests from Frontend (actually from anywhere).
 	 *
 	 * @return void
 	 */
 	public function registerRequestListener() {
-
-		/**
-		 * The Chain A starts here.
-		 */
 		add_action( 'nseo/request/triggered', [ $this, 'processRequestTriggering' ], 10, 1 );
 	}
 
@@ -77,7 +79,19 @@ class General {
 		Factory::getConnectionsClient()->registerRelation( $description2product );
 	}
 
+	/**
+	 * @throws ExcessRequest
+	 */
 	public function processRequestTriggering( $postID ) {
+		// @todo Ensure correct result in threads.
+
+		// First, check for current status.
+		if ( StatusManager::isActive( $postID ) ) {
+			// There is active request for this post. Skip.
+			// @todo Make checking if action has failed or removed.
+			throw new ExcessRequest( $postID );
+		}
+
 		$data = new RequestData( $postID );
 		$actionID = as_enqueue_async_action( REQUEST_HOOK, $data->toArray(), SLUG );
 		StatusManager::actionScheduled( $actionID, $postID );

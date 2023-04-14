@@ -24,8 +24,8 @@ class Webhook {
 	}
 
 	/**
+	 * The Chain C starts here.
 	 * Receives data from Neural API.
-	 * The Chain B starts here.
 	 *
 	 * @throws RelationNotFound
 	 * @throws ConnectionWrongData
