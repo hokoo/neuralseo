@@ -12,8 +12,22 @@ class Status {
 
 	public string $metaKey;
 	public string $status;
+
+	/**
+	 * AS action ID related to last data updating request.
+	 */
 	public int $actionID = 0;
+
+	/**
+	 * Last data updating by REST API datetime.
+	 * Timestamp.
+	 */
 	public int $lastUpd = 0;
+
+	/**
+	 * Last data updating request datetime.
+	 * Timestamp.
+	 */
 	public int $lastRequest = 0;
 
 	public function __construct() {
@@ -52,9 +66,9 @@ class Status {
 	public static function fromArray( array $data ): Status {
 		$instance = new self();
 		$instance->status = $data['status'] ?? self::UNDEFINED;
-		$instance->actionID = $data['actionID'] ?? 0;
-		$instance->lastUpd = $data['lastUpd'] ?? 0;
-		$instance->lastRequest = $data['lastRequest'] ?? 0;
+		$instance->actionID = $data['actionID'] ?? $instance->actionID;
+		$instance->lastUpd = $data['lastUpd'] ?? $instance->lastUpd;
+		$instance->lastRequest = $data['lastRequest'] ?? $instance->lastRequest;
 
 		return $instance;
 	}

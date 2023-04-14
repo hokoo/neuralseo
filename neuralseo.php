@@ -25,5 +25,6 @@ const CPT_TITLE = 'nseo_title';
 const CPT_DESCRIPTION = 'nseo_description';
 const WPC_RELATION_T2P = 'title2product';
 const WPC_RELATION_D2P = 'description2product';
+const ACTION_TIMEOUT = 60 * MINUTE_IN_SECONDS;
 
 ( new General() )->init();

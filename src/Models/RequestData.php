@@ -3,8 +3,6 @@
 namespace NeuralSEO\Models;
 
 class RequestData {
-	private array $data;
-
 	public string $title;
 	public string $description;
 	public string $language;

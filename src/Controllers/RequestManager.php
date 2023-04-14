@@ -10,6 +10,7 @@ use NeuralSEO\Exceptions\ExcessRequest;
 use NeuralSEO\Exceptions\RequestFailed;
 use NeuralSEO\Factory;
 use NeuralSEO\Models\RequestData;
+use function NeuralSEO\isActionPending;
 
 class RequestManager {
 
@@ -22,9 +23,10 @@ class RequestManager {
 		// @todo Ensure correct result in threads.
 
 		// First, check for current status.
+		// Make checking if action has not failed or removed.
+		StatusCheckManager::ensureCorrect( $postID );
 		if ( StatusManager::isActive( $postID ) ) {
 			// There is active request for this post. Skip.
-			// @todo Make checking if action has failed or removed.
 			throw new ExcessRequest( $postID );
 		}
 
@@ -36,7 +38,7 @@ class RequestManager {
 	 * Process AS action sending request to Neural API.
 	 */
 	public static function processRequestAction( $postID ) {
-		$requestData = new RequestData( $postID );;
+		$requestData = new RequestData( $postID );
 
 		try {
 			$result = Factory::getNeuralClient()->requestData( $requestData->toArray() );
