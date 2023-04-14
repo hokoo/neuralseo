@@ -23,7 +23,7 @@ require_once __DIR__ . '/lib/neuralApi/autoload.php';
 require_once __DIR__ . '/includes/functions.php';
 
 const SLUG = 'neural_seo';
-const REQUEST_HOOK = 'nseo/request';
+const REQUEST_HOOK = 'nseo/action/request';
 const POST_STATUS_META = 'nseo_post_status';
 const CPT_TITLE = 'nseo_title';
 const CPT_DESCRIPTION = 'nseo_description';

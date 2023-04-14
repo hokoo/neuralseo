@@ -19,19 +19,20 @@ class Sender {
 		add_action( REQUEST_HOOK, [ self::class, 'processRequest' ], 10, 2 );
 	}
 
-	/**
-	 * @throws RequestFailed
-	 */
 	public static function processRequest( $data ) {
 		$requestData = RequestData::fromArray( $data );
 
-
-		$result = get_client()->requestData( $data );
-		if ( ! $result ) {
-			// @todo reschedule action
-			return;
+		try {
+			$result = get_client()->requestData( $data );
+		} catch ( RequestFailed $exception ) {
+			$result = false;
 		}
 
+		if ( empty( $result ) ) {
+			$actionID = Scheduler::setupAction( $data );
+			StatusManager::actionScheduled( $actionID, $requestData->postID );
+			return;
+		}
 
 		StatusManager::actionPerformed( $requestData->postID );
 	}

@@ -93,7 +93,7 @@ class General {
 		}
 
 		$data = new RequestData( $postID );
-		$actionID = as_enqueue_async_action( REQUEST_HOOK, $data->toArray(), SLUG );
+		$actionID = Scheduler::setupAction( $data->toArray() );
 		StatusManager::actionScheduled( $actionID, $postID );
 	}
 }
