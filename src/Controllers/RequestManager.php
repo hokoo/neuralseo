@@ -28,30 +28,29 @@ class RequestManager {
 			throw new ExcessRequest( $postID );
 		}
 
-		$data = new RequestData( $postID );
-		$actionID = Scheduler::setupAction( $data->toArray() );
+		$actionID = Scheduler::setupAction( $postID );
 		StatusManager::actionScheduled( $actionID, $postID );
 	}
 
 	/**
 	 * Process AS action sending request to Neural API.
 	 */
-	public static function processRequestAction( $data ) {
-		$requestData = RequestData::fromArray( $data );
+	public static function processRequestAction( $postID ) {
+		$requestData = new RequestData( $postID );;
 
 		try {
-			$result = Factory::getNeuralClient()->requestData( $data );
+			$result = Factory::getNeuralClient()->requestData( $requestData->toArray() );
 		} catch ( RequestFailed $exception ) {
 			$result = false;
 		}
 
 		if ( empty( $result ) ) {
-			$actionID = Scheduler::setupAction( $data );
-			StatusManager::actionScheduled( $actionID, $requestData->postID );
+			$actionID = Scheduler::setupAction( $postID );
+			StatusManager::actionScheduled( $actionID, $postID );
 			return;
 		}
 
-		StatusManager::actionPerformed( $requestData->postID );
+		StatusManager::actionPerformed( $postID );
 	}
 
 	/**

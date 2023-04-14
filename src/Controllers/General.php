@@ -29,7 +29,7 @@ class General {
 		 * The Chain B starts here.
 		 * Process AS action sending request to Neural API.
 		 */
-		add_action( REQUEST_HOOK, [ RequestManager::class, 'processRequestAction' ], 10, 2 );
+		add_action( REQUEST_HOOK, [ RequestManager::class, 'processRequestAction' ], 10, 1 );
 
 		/**
 		 * The Chain C starts here.
