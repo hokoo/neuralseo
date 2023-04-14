@@ -7,9 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class StatusTest extends TestCase {
 
-	public function setUp(): void {
+	public static function setUpBeforeClass(): void {
 		define( "NeuralSEO\POST_STATUS_META", 'nseo_post_status' );
-		parent::setUp();
+		parent::setUpBeforeClass();
 	}
 
 	public function testToArray() {
@@ -24,5 +24,17 @@ class StatusTest extends TestCase {
 		self::assertArrayHasKey( 'status', $array );
 		self::assertArrayHasKey( 'actionID', $array );
 		self::assertArrayHasKey( 'lastUpd', $array );
+	}
+
+	public function testFromArray() {
+		$data = [
+			'status'        => Status::PENDING,
+			'actionID'      => 777,
+			'lastUpd'       => 77,
+			'lastRequest'   => 7,
+		];
+
+		$status = Status::fromArray( $data );
+		self::assertEquals( $data, $status->toArray() );
 	}
 }
