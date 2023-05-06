@@ -6,6 +6,8 @@ use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationWrongData;
 use iTRON\wpConnections\Query\Relation;
 use NeuralSEO\Factory;
+use NeuralSEO\Settings;
+
 use const NeuralSEO\CPT_DESCRIPTION;
 use const NeuralSEO\CPT_TITLE;
 use const NeuralSEO\REQUEST_HOOK;
@@ -63,5 +65,17 @@ class General {
 
 		Factory::getConnectionsClient()->registerRelation( $title2product );
 		Factory::getConnectionsClient()->registerRelation( $description2product );
+	}
+
+	/**
+	 * @return void
+	 * @todo Add caps for other roles, e.g. `SEO Manager` by Yoast.
+	 *
+	 */
+	public function processActivationHook() {
+		$role = get_role( 'administrator' );
+		$role->add_cap( Settings::MANAGE_CAPS, true );
+
+		do_action( 'nseo/capabilities/set' );
 	}
 }

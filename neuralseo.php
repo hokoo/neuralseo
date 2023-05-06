@@ -27,4 +27,10 @@ const WPC_RELATION_T2P = 'title2product';
 const WPC_RELATION_D2P = 'description2product';
 const ACTION_TIMEOUT = 60 * MINUTE_IN_SECONDS;
 
-( new General() )->init();
+$generalController = new General();
+$generalController->init();
+
+register_activation_hook(
+	__FILE__,
+	[ $generalController, 'processActivationHook' ]
+);
