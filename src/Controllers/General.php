@@ -18,6 +18,7 @@ class General {
 
 	public function init() {
 		CPT::init();
+		Settings::init();
 
 		add_action( 'init', [ $this, 'registerRelations' ], 10 );
 

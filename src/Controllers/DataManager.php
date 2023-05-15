@@ -7,6 +7,7 @@ use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationNotFound;
 use iTRON\wpConnections\Query\Connection;
 use iTRON\wpPostAble\Exceptions\wppaSavePostException;
+use NeuralSEO\Controllers\CarbonDatastore\CarbonDatastore;
 use NeuralSEO\Factory;
 use NeuralSEO\Models\Description;
 use NeuralSEO\Models\Title;
@@ -42,7 +43,7 @@ class DataManager {
 			$tConnectionQuery = new Connection();
 			$tConnectionQuery->set( 'from', $title->getPost()->ID );
 			$tConnectionQuery->set( 'to', $postID );
-			$tConnectionQuery->set( 'order', 10 );
+			$tConnectionQuery->set( 'order', CarbonDatastore::BASIC );
 			Factory::getConnectionsClient()->getRelation( WPC_RELATION_T2P )->createConnection( $tConnectionQuery );
 
 			$description = new Description();
@@ -53,7 +54,7 @@ class DataManager {
 			$dConnectionQuery = new Connection();
 			$dConnectionQuery->set( 'from', $description->getPost()->ID );
 			$dConnectionQuery->set( 'to', $postID );
-			$dConnectionQuery->set( 'order', 10 );
+			$dConnectionQuery->set( 'order', CarbonDatastore::BASIC );
 			Factory::getConnectionsClient()->getRelation( WPC_RELATION_D2P )->createConnection( $dConnectionQuery );
 		}
 	}
