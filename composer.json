@@ -27,7 +27,8 @@
     "hokoo/wppostable": ">=0.5",
     "hokoo/wpconnections": "master-dev",
     "woocommerce/action-scheduler": "^3.5",
-    "htmlburger/carbon-fields": "3.5"
+    "htmlburger/carbon-fields": "3.5",
+    "hokoo/wp-lock": "master-dev"
   },
   "autoload": {
     "psr-4": {

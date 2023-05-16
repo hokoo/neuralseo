@@ -2,6 +2,7 @@
 
 namespace NeuralSEO\Controllers;
 
+use iTRON\WP_Lock\WP_Lock;
 use iTRON\wpConnections\Exceptions\ConnectionWrongData;
 use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationNotFound;
@@ -20,18 +21,25 @@ class RequestManager {
 	 * @throws ExcessRequest
 	 */
 	public static function processRequestTriggering( $postID ) {
-		// @todo Ensure correct result in threads.
+		// Ensure correct result in threads.
+		$lock = new WP_Lock( 'nseo_request_triggering:' . $postID );
+		if ( ! $lock->acquire( WP_Lock::WRITE, false, 0 ) ) {
+			return;
+		}
 
 		// First, check for current status.
 		// Make checking if action has not failed or removed.
 		StatusCheckManager::ensureCorrect( $postID );
 		if ( StatusManager::isActive( $postID ) ) {
 			// There is active request for this post. Skip.
+			$lock->release();
 			throw new ExcessRequest( $postID );
 		}
 
 		$actionID = Scheduler::setupAction( $postID );
 		StatusManager::actionScheduled( $actionID, $postID );
+
+		$lock->release();
 	}
 
 	/**
