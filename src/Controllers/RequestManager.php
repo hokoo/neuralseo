@@ -3,6 +3,7 @@
 namespace NeuralSEO\Controllers;
 
 use iTRON\WP_Lock\WP_Lock;
+use iTRON\WP_Lock\WP_Lock_Backend_DB;
 use iTRON\wpConnections\Exceptions\ConnectionWrongData;
 use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationNotFound;
@@ -22,7 +23,7 @@ class RequestManager {
 	 */
 	public static function processRequestTriggering( $postID ) {
 		// Ensure correct result in threads.
-		$lock = new WP_Lock( 'nseo_request_triggering:' . $postID );
+		$lock = new WP_Lock( 'nseo_request_triggering:' . $postID, new WP_Lock_Backend_DB() );
 		if ( ! $lock->acquire( WP_Lock::WRITE, false, 0 ) ) {
 			return;
 		}
