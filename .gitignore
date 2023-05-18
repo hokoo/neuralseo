@@ -1,5 +1,5 @@
 /vendor
-
+/wordpress-develop
 # ignore log files, caches and databases
 *.log
 *.sql
