@@ -42,7 +42,7 @@ class StatusManager {
 	}
 
 	public static function getPostStatus( int $postID ): Status {
-		$data = get_post_meta( $postID, POST_STATUS_META, true );
+		$data = is_array( $data = get_post_meta( $postID, POST_STATUS_META, true ) ) ? $data : [];
 		return Status::fromArray( $data );
 	}
 
