@@ -8,11 +8,13 @@ use iTRON\wpConnections\Exceptions\ConnectionWrongData;
 use iTRON\wpConnections\Exceptions\MissingParameters;
 use iTRON\wpConnections\Exceptions\RelationNotFound;
 use iTRON\wpPostAble\Exceptions\wppaSavePostException;
+use NeuralSEO\Exceptions\Exception;
 use NeuralSEO\Exceptions\ExcessRequest;
+use NeuralSEO\Exceptions\ParallelRequest;
 use NeuralSEO\Exceptions\RequestFailed;
 use NeuralSEO\Factory;
 use NeuralSEO\Models\RequestData;
-use function NeuralSEO\isActionPending;
+use NeuralSEO\Settings;
 
 class RequestManager {
 
@@ -20,12 +22,13 @@ class RequestManager {
 	 * Listens for the requests from Frontend (actually from anywhere).
 	 *
 	 * @throws ExcessRequest
+	 * @throws ParallelRequest
 	 */
 	public static function processRequestTriggering( $postID ) {
 		// Ensure correct result in threads.
 		$lock = new WP_Lock( 'nseo_request_triggering:' . $postID, new WP_Lock_Backend_DB() );
 		if ( ! $lock->acquire( WP_Lock::WRITE, false, 0 ) ) {
-			return;
+			throw new ParallelRequest( $postID );
 		}
 
 		// First, check for current status.
@@ -79,5 +82,19 @@ class RequestManager {
 
 		DataManager::processResults( $postID, $language, $data );
 		StatusManager::dataReceived( $postID );
+	}
+
+	public static function processAjaxRequest() {
+		if ( ! current_user_can( Settings::MANAGE_CAPS ) ) {
+			wp_send_json_error( [ 'message' => __( 'You have no permissions to do this.', 'neuralseo' ), 'code' => 401 ] );
+		}
+
+		try {
+			do_action( 'nseo/request/triggered', $_POST['post_id'] );
+		} catch ( Exception $exception ) {
+			wp_send_json_error( [ 'message' => $exception->getMessage(), 'code' => $exception->getCode() ] );
+		}
+
+		wp_send_json_success( [ 'message' => __( 'Request has been sent successfully.', 'neuralseo' ) ] );
 	}
 }

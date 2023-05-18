@@ -8,6 +8,7 @@ use Carbon_Fields\Field;
 use NeuralSEO\Controllers\CarbonDatastore\CarbonDatastore;
 use NeuralSEO\Controllers\CarbonDatastore\Description;
 use NeuralSEO\Controllers\CarbonDatastore\Title;
+use NeuralSEO\Controllers\StatusManager;
 
 class Settings {
 	const MANAGE_CAPS = 'nseo_manage_options';
@@ -52,6 +53,10 @@ class Settings {
 	static function createProductFields() {
 		Container::make( 'post_meta', 'Neural SEO Data' )
 		         ->where( 'post_type', '=', 'product' )
+		         ->add_fields( [
+			         Field::make( 'html', 'nseo_data_panel' )
+			              ->set_html( [ self::class, 'getProductPanel' ] )
+		         ] )
 		         ->add_fields( [
 			         Field::make( 'complex', 'nseo_data_title' )
 			              ->set_width( 50 )
@@ -129,6 +134,21 @@ class Settings {
 		return $delete;
 	}
 
+	public function getProductPanel() {
+		$status = StatusManager::getPostStatus( get_the_ID() );
+		$html   = "<div class='nseo-status status'>Status: <span>{$status->status}</span></div>";
+
+		$last = $status->lastRequest ? date_i18n( 'd.m.Y H:i:s', $status->lastRequest ) : 'Never';
+		$html .= "<div class='nseo-status last-request'>Last request: <span>$last</span></div>";
+
+		// Provide a button to make a request.
+		if ( ! StatusManager::isActive( get_the_ID() ) ) {
+			$html .= "<div class='nseo-status request-button'><button class='button button-primary' id='nseo_request_button'>Request</button></div>";
+		}
+
+		return $html;
+	}
+
 	static function printScript() {
 		?>
 		<script>
@@ -157,6 +177,37 @@ class Settings {
                 const {addAction, didAction} = window.cf.hooks;
                 (didAction('carbon-fields.init') && processCheckboxes()) ||
                 addAction('carbon-fields.init', 'carbon-fields/metaboxes', processCheckboxes);
+            })();
+
+            // Add event listener to the Request button. Send REST API request.
+            (function () {
+                const button = document.getElementById('nseo_request_button');
+                if (button) {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const data = new FormData();
+                        data.append('action', 'nseo_request');
+                        data.append('post_id', '<?php echo get_the_ID(); ?>');
+
+                        fetch('<?php echo admin_url( 'admin-ajax.php' ); ?>', {
+                            method: 'POST',
+                            body: data
+                        })
+                            .then((response) => response.json())
+                            .then(response => {
+                                alert( response.data.message );
+
+                                if (response.success) {
+									button.style.display = 'none';
+								}
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                alert( "An error has occurred." );
+                            });
+                    });
+                }
             })();
 		</script>
 

@@ -39,6 +39,11 @@ class General {
 		 * Receives data from Neural API.
 		 */
 		add_action( 'rest_api_init', [ WebhookManager::class, 'registerRestRoutes' ], 10 );
+
+		/**
+		 * Listen for AJAX requests from the admin panel.
+		 */
+		add_action( 'wp_ajax_nseo_request', [ RequestManager::class, 'processAjaxRequest' ] );
 	}
 
 	/**
