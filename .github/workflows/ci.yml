@@ -1,0 +1,29 @@
+name: CI
+
+on: workflow_dispatch
+
+jobs:
+  rollout-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install PHP Dependencies
+        uses: ramsey/composer-install@v2
+        with:
+          composer-options: "--no-dev"
+
+      - name: Run Deploy
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SERVER: ${{ secrets.SERVER }}
+          USER: ${{ secrets.USER }}
+        run: |
+            sudo apt-get update -y && sudo apt-get -y install openssh-client curl rsync git
+            mkdir -p ~/.ssh
+            printf "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+            eval $(ssh-agent -s)
+            ssh-add - <<< $SSH_KEY
+            rsync -rav -e ssh --delete ./ $USER@$SERVER:/srv/web/neuralseo.itron.pro/wp-content/plugins
+            ssh -p22 $USER@$SERVER "chown -R www-data:www-data /srv/web/neuralseo.itron.pro/"
