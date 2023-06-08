@@ -15,15 +15,13 @@ jobs:
           composer-options: "--no-dev"
 
       - name: Run Deploy
+        uses: easingthemes/ssh-deploy@main
         env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SERVER: ${{ secrets.SERVER }}
-          USER: ${{ secrets.USER }}
-        run: |
-            sudo apt-get update -y && sudo apt-get -y install openssh-client curl rsync git
-            mkdir -p ~/.ssh
-            printf "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-            eval $(ssh-agent -s)
-            ssh-add - <<< $SSH_KEY
-            rsync -rav -e ssh --delete ./ $USER@$SERVER:/srv/web/neuralseo.itron.pro/wp-content/plugins
-            ssh -p22 $USER@$SERVER "chown -R www-data:www-data /srv/web/neuralseo.itron.pro/"
+          REMOTE_HOST: ${{ secrets.SERVER }}
+          REMOTE_USER: ${{ secrets.SERVER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          SOURCE: "./"
+          TARGET: "/srv/web/neuralseo.itron.pro/wp-content/plugins/neuralseo"
+          ARGS: "-rav -e --delete"
+          SCRIPT_BEFORE: mkdir -p /srv/web/neuralseo.itron.pro/wp-content/plugins/neuralseo
+          SCRIPT_AFTER: chown -R www-data:www-data /srv/web/neuralseo.itron.pro/
