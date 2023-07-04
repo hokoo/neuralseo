@@ -19,6 +19,7 @@ class General {
 	public function init() {
 		CPT::init();
 		Settings::init();
+        Render::addFilters();
 
 		add_action( 'init', [ $this, 'registerRelations' ], 10 );
 
